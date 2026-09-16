@@ -6,7 +6,7 @@ correctly under load, from account auth all the way through to a paid, emailed t
 
 ![CI](https://github.com/devvrat015/ticketvault/actions/workflows/ci.yml/badge.svg)
 
-**Live demo:** https://ticketvault.onrender.com/docs *(may take ~30s to wake up on first request — free tier)*
+**Live demo:** https://ticketvault-api-6ksa.onrender.com/docs *(may take ~30s to wake up on first request — free tier)*
 
 ---
 
