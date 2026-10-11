@@ -9,6 +9,9 @@ from fastapi import Depends, HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.seats import router as seats_router
+
 from app.api.deps import get_db
 from app.api.auth import router as auth_router
 from app.api.organizer import router as organizer_router
@@ -110,6 +113,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173",
+    "https://ticketvault-frontend.vercel.app",],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(auth_router)
@@ -120,7 +131,7 @@ app.include_router(bookings_router)
 app.include_router(ws_router)
 app.include_router(payments_router)
 app.include_router(webhooks_router)
-
+app.include_router(seats_router)
 
 @app.get("/health")
 def health():

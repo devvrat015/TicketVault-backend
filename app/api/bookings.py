@@ -137,3 +137,18 @@ async def hold_seat_route(
             status_code=400,
             detail="Seat not available",
         )
+
+
+from sqlalchemy import desc
+from app.models.booking import Booking
+@router.get("/me", response_model=list[BookingResponse])
+def my_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    return (
+        db.query(Booking)
+        .filter(Booking.user_id == current_user.id)
+        .order_by(desc(Booking.created_at))
+        .all()
+    )
