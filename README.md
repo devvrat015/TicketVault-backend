@@ -170,7 +170,7 @@ behavior for a portfolio deployment, not a bug.
 - Multi-seat booking in a single transaction (with deadlock handling, since
   locking multiple rows introduces that risk)
 - A stored, indexed `tsvector` column for full-text search instead of computing
-  it on the fly, if search volume grew significantly
+  it on the fly, if search volume grew significantly.
 
 ---
 
