@@ -1,10 +1,13 @@
 import asyncio
+import logging
 import time
 
 from app.core.redis_client import redis_client, publish_event
 from app.core.database import SessionLocal
 from app.models.enums import SeatStatus
 from app.models.seat import Seat
+
+logger = logging.getLogger(__name__)
 
 
 async def release_expired_seat(seat_id: int):
@@ -46,7 +49,7 @@ async def release_expired_seat(seat_id: int):
 
 
 async def listen_for_expired_holds():
-    print("REDIS SORTED SET EXPIRATION CHECKER STARTED")
+    logger.info("Hold expiration checker started")
 
     try:
         while True:
@@ -62,7 +65,7 @@ async def listen_for_expired_holds():
             for seat_id in expired_seats:
                 seat_id = int(seat_id)
 
-                print("HOLD EXPIRED:", seat_id)
+                logger.info(f"Hold expired: seat_id={seat_id}")
 
                 await release_expired_seat(seat_id)
 

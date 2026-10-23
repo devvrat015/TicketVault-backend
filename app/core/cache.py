@@ -23,3 +23,11 @@ def set_cache(key: str, value: Any, ttl: int = 60):
 
 def delete_cache(key: str):
     redis_client.delete(key)
+
+
+def get_events_list_version() -> str:
+    return redis_client.get("events:list:version") or "0"
+
+
+def bump_events_list_version() -> None:
+    redis_client.incr("events:list:version")

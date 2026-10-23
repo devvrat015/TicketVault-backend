@@ -1,6 +1,9 @@
+import logging
 from typing import Dict, List
 
 from fastapi import WebSocket
+
+logger = logging.getLogger(__name__)
 
 
 class ConnectionManager:
@@ -13,8 +16,8 @@ class ConnectionManager:
 
         self.active_connections.setdefault(event_id, []).append(websocket)
 
-        print(
-            f"🔌 WebSocket connected: event={event_id}, "
+        logger.info(
+            f"WebSocket connected: event={event_id}, "
             f"connections={len(self.active_connections[event_id])}"
         )
 
@@ -26,16 +29,16 @@ class ConnectionManager:
             if not self.active_connections[event_id]:
                 del self.active_connections[event_id]
 
-        print(
-            f"🔌 WebSocket disconnected: event={event_id}"
+        logger.info(
+            f"WebSocket disconnected: event={event_id}"
         )
 
     async def broadcast(self, event_id: int, message: dict):
 
         connections = self.active_connections.get(event_id, [])
 
-        print(
-            f"📡 Broadcasting to event={event_id}, "
+        logger.info(
+            f"Broadcasting to event={event_id}, "
             f"connections={len(connections)}, "
             f"message={message}"
         )

@@ -1,10 +1,13 @@
 import asyncio
 import json
+import logging
 
 import redis.asyncio as aioredis
 
 from app.core.config import settings
 from app.core.connection_manager import manager
+
+logger = logging.getLogger(__name__)
 
 
 async def listen_for_events():
@@ -21,7 +24,7 @@ async def listen_for_events():
 
             await pubsub.psubscribe("event:*:updates")
 
-            print("📡 Redis Pub/Sub listener started...")
+            logger.info("Redis Pub/Sub listener started...")
 
             async for message in pubsub.listen():
                 if message["type"] == "pmessage":
@@ -33,8 +36,8 @@ async def listen_for_events():
 
                     data = json.loads(message["data"])
 
-                    print(
-                        f"📨 Received from {channel}: {data}"
+                    logger.info(
+                        f"Received from {channel}: {data}"
                     )
 
                     await manager.broadcast(
@@ -46,8 +49,8 @@ async def listen_for_events():
             raise
 
         except Exception as e:
-            print(
-                f"❌ Redis Pub/Sub listener error: {e}"
+            logger.error(
+                f"Redis Pub/Sub listener error: {e}"
             )
 
             await asyncio.sleep(2)

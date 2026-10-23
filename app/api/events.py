@@ -16,6 +16,8 @@ from app.core.cache import (
     get_cache,
     set_cache,
     delete_cache,
+    get_events_list_version,
+    bump_events_list_version,
 )
 
 router = APIRouter(
@@ -73,7 +75,7 @@ def create_event(
             db.add(seat)
 
     db.commit()
-    delete_cache("events:list:all")
+    bump_events_list_version()
 
     return new_event
 
@@ -87,7 +89,8 @@ def get_all_events(
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    cache_key = f"events:list:page:{page}:limit:{limit}"
+    version = get_events_list_version()
+    cache_key = f"events:list:v{version}:page:{page}:limit:{limit}"
 
     cached = get_cache(cache_key)
 
@@ -322,7 +325,7 @@ def update_event(
 
     db.refresh(event)
     delete_cache(f"event:{event_id}")
-    delete_cache("events:list:all")
+    bump_events_list_version()
 
     return event
 
@@ -358,4 +361,4 @@ def delete_event(
     db.delete(event)
     db.commit()
     delete_cache(f"event:{event_id}")
-    delete_cache("events:list:all")
+    bump_events_list_version()

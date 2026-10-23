@@ -1,3 +1,4 @@
+import logging
 import smtplib
 from email.message import EmailMessage
 
@@ -9,6 +10,8 @@ from app.models.seat import Seat
 from app.models.event import Event
 from app.models.user import User
 from app.services.pdf_service import generate_ticket_pdf
+
+logger = logging.getLogger(__name__)
 
 
 @celery_app.task(bind=True, max_retries=3)
@@ -109,8 +112,8 @@ Thank you for using TicketVault!
 
             server.send_message(msg)
 
-        print(
-            f"📧 Ticket email sent successfully for booking {booking.id}"
+        logger.info(
+            f"Ticket email sent successfully for booking {booking.id}"
         )
 
         return {
@@ -119,8 +122,8 @@ Thank you for using TicketVault!
         }
 
     except Exception as exc:
-        print(
-            f"❌ Failed to send ticket email for booking "
+        logger.error(
+            f"Failed to send ticket email for booking "
             f"{booking_id}: {exc}"
         )
 
