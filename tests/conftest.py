@@ -11,9 +11,11 @@ from app.core.redis_client import redis_client
 
 import os
 
+from app.core.config import settings
+
 TEST_DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:devvrat7821@localhost:5432/ticketvault_test_db",
+    settings.DATABASE_URL.replace("ticketvault_db", "ticketvault_test_db"),
 )
 
 engine = create_engine(TEST_DATABASE_URL)
